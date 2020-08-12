@@ -13,8 +13,8 @@ const icons = {
 //const colors = ["#CFD8DC","#B0BEC5","#90A4AE","#78909C","#607D8B","#455A64"];
 // color tones
 const colors = ["slategrey","#FFC300","#FF5733","#C70039","#900C3F","#581845"];
-const MajorEarthquakeLimit = 5;
-var lineGroup = [];
+const MajorEarthquakeLimit = 4.6;
+const lineGroup = [];
 
 function createMap(quakes, markers, lines) {
 
@@ -66,7 +66,7 @@ function createMap(quakes, markers, lines) {
   // Create the map object with options
   var map = L.map("map-id", {
     center: [36.7783, -119.4179],
-    zoom: 4,
+    zoom: 6,
     layers: [darkMap, quakes, markers, lines]
   });
 
@@ -81,11 +81,8 @@ function createMap(quakes, markers, lines) {
     var div = L.DomUtil.create("div", "info legend");
     var limits = ["0~1","1~2","2~3","3~4","4~5","5+"];
     var labels = [];
-    // Add min & max
     var legendInfo = "<h3>Earthquake Magnitude</h3>";
-
     div.innerHTML = legendInfo;
-
     limits.forEach(function(limit, index) {
       labels.push("<li style=\"background-color: " + colors[index] + "\">" + limit + "</li>");
     });
@@ -100,8 +97,6 @@ function createMap(quakes, markers, lines) {
 
 function createLayers(response) {
   
-  //console.log(response.features);
-  //console.log(response.features[0].geometry.coordinates);
   // Pull the quakes features off of response.features geojson
   var incidents = response.features;
 
@@ -139,14 +134,6 @@ function createLayers(response) {
     }
   } // end for()
 
-  
-
-  console.log(lineGroup);
-
-  var latlngs = [ [ -0.437900, -54.851800 ], [ -0.038826, -54.677200 ], [ 0.443182, -54.451200 ], [ 0.964534, -54.832200 ], [ 1.694810, -54.399000 ], [ 2.359750, -54.037400 ], [ 3.025420, -53.650700 ], [ 3.368940, -53.834100 ], [ 3.956380, -54.126700 ], [ 4.414580, -54.430300 ], [ 4.826610, -54.161600 ], [ 5.083720, -54.309300 ], [ 5.494690, -54.542900 ], [ 6.183730, -54.114500 ], [ 6.625400, -53.814200 ], [ 7.237290, -54.101200 ], [ 7.772350, -54.396000 ] ];
-  var polyline = L.polyline(latlngs, {color: 'red'});
-  //lineGroup.push(polyline);
-
   // Create a layer group made from the quake circles array, pass it into the createMap function
   createMap(L.layerGroup(circleGroup), L.layerGroup(markerGroup), L.layerGroup(lineGroup));
 }
@@ -155,11 +142,8 @@ d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/
     var faultLines = faultLineJson.features;
 
     faultLines.forEach( (line, index) => {
-      //console.log(index);
-      //console.log(line);
       var coordinates = [];
       coordinates = line.geometry.coordinates;
-      //console.log(coordinates);
       // create a red polyline from an array of coordinates points
       //var latlngs = [ [ -0.437900, -54.851800 ], [ -0.038826, -54.677200 ], [ 0.443182, -54.451200 ], [ 0.964534, -54.832200 ], [ 1.694810, -54.399000 ], [ 2.359750, -54.037400 ], [ 3.025420, -53.650700 ], [ 3.368940, -53.834100 ], [ 3.956380, -54.126700 ], [ 4.414580, -54.430300 ], [ 4.826610, -54.161600 ], [ 5.083720, -54.309300 ], [ 5.494690, -54.542900 ], [ 6.183730, -54.114500 ], [ 6.625400, -53.814200 ], [ 7.237290, -54.101200 ], [ 7.772350, -54.396000 ] ];
       var polyline = L.polyline(coordinates, {color: 'red'});
