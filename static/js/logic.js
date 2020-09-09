@@ -15,6 +15,8 @@ const icons = {
 const colors = ["slategrey","#FFC300","#FF5733","#C70039","#900C3F","#581845"];
 const MajorEarthquakeLimit = 4.6;
 const lineGroup = [];
+const faultlineGroup = [];
+var map;
 
 function createMap(quakes, markers, lines) {
 
@@ -64,7 +66,7 @@ function createMap(quakes, markers, lines) {
   };
 
   // Create the map object with options
-  var map = L.map("map-id", {
+  map = L.map("map-id", {
     center: [36.7783, -119.4179],
     zoom: 6,
     layers: [darkMap, quakes, markers, lines]
@@ -133,24 +135,35 @@ function createLayers(response) {
       "<h3>Date,Time: &nbsp; " + dateObject.toLocaleString() + "</h3>"));
     }
   } // end for()
-
+  console.log(faultlineGroup);
   // Create a layer group made from the quake circles array, pass it into the createMap function
-  createMap(L.layerGroup(circleGroup), L.layerGroup(markerGroup), L.layerGroup(lineGroup));
+  createMap(L.layerGroup(circleGroup), L.layerGroup(markerGroup), L.layerGroup(faultlineGroup));
 }
 
 d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json", function(faultLineJson) {
+    /*
     var faultLines = faultLineJson.features;
+    faultlineGroup.push(L.geoJson(faultLines, {
+      style: function (feature) {
+          return {color: feature.properties.color};
+      }}).addTo(map));
+    */
 
+   faultlineGroup.push(L.geoJson(faultLineJson, {
+        color: "coral",
+        weight: 1
+      }));
+/*
     faultLines.forEach( (line, index) => {
       var coordinates = [];
       coordinates = line.geometry.coordinates;
       // create a red polyline from an array of coordinates points
       //var latlngs = [ [ -0.437900, -54.851800 ], [ -0.038826, -54.677200 ], [ 0.443182, -54.451200 ], [ 0.964534, -54.832200 ], [ 1.694810, -54.399000 ], [ 2.359750, -54.037400 ], [ 3.025420, -53.650700 ], [ 3.368940, -53.834100 ], [ 3.956380, -54.126700 ], [ 4.414580, -54.430300 ], [ 4.826610, -54.161600 ], [ 5.083720, -54.309300 ], [ 5.494690, -54.542900 ], [ 6.183730, -54.114500 ], [ 6.625400, -53.814200 ], [ 7.237290, -54.101200 ], [ 7.772350, -54.396000 ] ];
       var polyline = L.polyline(coordinates, {color: 'red'});
-      //var polyline = L.geoJson(coordinates, { color : "orange"});
+      
       lineGroup.push(polyline);
     });
-
+*/
   });
 
 // Perform an API call to the USGS API to get live earth quake info. Call createLayers when complete
